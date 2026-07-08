@@ -85,6 +85,19 @@ header{position:sticky;top:0;z-index:50;background:rgba(244,241,233,.92);backdro
 .cat-img .pending{position:absolute;bottom:10px;right:12px;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:rgba(251,249,244,.8);padding:3px 8px;border-radius:4px}
 .cat h3{font-size:1rem;font-family:var(--body);font-weight:700;padding:16px 18px}
 
+.cat-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cat-count{position:absolute;bottom:10px;right:12px;font-size:.68rem;font-weight:700;letter-spacing:.08em;color:#fff;background:rgba(36,27,19,.65);padding:3px 9px;border-radius:4px}
+
+/* ---------- lightbox ---------- */
+.lightbox{position:fixed;inset:0;background:rgba(20,15,10,.94);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:100;padding:20px}
+.lightbox.open{display:flex}
+.lightbox img{max-width:92vw;max-height:74vh;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.lb-bar{color:#d9d2c4;display:flex;gap:20px;align-items:center;margin-top:18px;font-size:.95rem}
+.lb-btn{background:none;border:1px solid rgba(244,241,233,.35);color:#f4f1e9;border-radius:99px;width:44px;height:44px;font-size:1.15rem;cursor:pointer;line-height:1}
+.lb-btn:hover{border-color:var(--brass-light);color:var(--brass-light)}
+.lb-close{position:absolute;top:16px;right:20px;background:none;border:0;color:#f4f1e9;font-size:2rem;cursor:pointer;line-height:1;padding:8px}
+.lb-title{font-family:var(--display);font-size:1.05rem}
+
 /* ---------- heritage strip ---------- */
 .heritage{background:var(--nogal);color:var(--paper)}
 .heritage .container{display:grid;grid-template-columns:auto 1fr;gap:48px;align-items:center}
@@ -286,6 +299,17 @@ footer .social a:hover{color:var(--brass-light)}
   </div>
 </footer>
 
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+  <button class="lb-close" onclick="closeLb()" aria-label="Cerrar">&times;</button>
+  <img id="lbImg" src="" alt="">
+  <div class="lb-bar">
+    <button class="lb-btn" onclick="stepLb(-1)" aria-label="Anterior">&#8249;</button>
+    <span class="lb-title" id="lbTitle"></span>
+    <span id="lbCount"></span>
+    <button class="lb-btn" onclick="stepLb(1)" aria-label="Siguiente">&#8250;</button>
+  </div>
+</div>
+
 <script>
 const i18n = {
   es: {
@@ -350,26 +374,86 @@ const catIcons = [
   '<path d="M6 19V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v14M4 19h16M9 7h6M9 11h6M9 15h6" fill="none" stroke="currentColor" stroke-width="1.5"/>' /* cabinet */
 ];
 
+/* One folder per category under fotos/ — same order as i18n cats arrays.
+   Drop images into the folder; fotos.json is regenerated automatically
+   by the GitHub Action (.github/workflows/fotos.yml) on every push. */
+const catSlugs = [
+  'dormitorio-moderno','dormitorio-clasico','dormitorio-juvenil',
+  'comedor-moderno','comedor-clasico','mesas-sillas','sofas',
+  'mueble-auxiliar','macizo-forja','recibidor-moderno','recibidor-clasico',
+  'vestidores','cuadros','estudio-despacho','colchones','somieres'
+];
+
 let lang = 'es';
+let manifest = {};   /* { slug: ["01-foo.webp", ...], ... } from fotos.json */
+
+fetch('fotos.json')
+  .then(r => r.ok ? r.json() : {})
+  .then(m => { manifest = m || {}; renderCats(); })
+  .catch(() => renderCats()); /* opening the file locally (file://) falls back to placeholders */
 
 function renderCats(){
   const grid = document.getElementById('catGrid');
   grid.innerHTML = '';
   i18n[lang].cats.forEach((name, i) => {
+    const slug = catSlugs[i];
+    const photos = manifest[slug] || [];
     const card = document.createElement('a');
     card.className = 'cat';
-    card.href = '#contacto';
-    card.innerHTML =
-      '<div class="cat-img">' +
+    let imgHtml;
+    if (photos.length) {
+      card.href = '#';
+      card.addEventListener('click', ev => { ev.preventDefault(); openLb(i); });
+      imgHtml =
+        '<img src="fotos/' + slug + '/' + encodeURIComponent(photos[0]) + '" alt="' + name + '" loading="lazy">' +
+        '<span class="cat-count">' + photos.length + ' &#128247;</span>';
+    } else {
+      card.href = '#contacto';
+      imgHtml =
         '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' + catIcons[i % catIcons.length] + '</svg>' +
-        '<span class="pending">' + i18n[lang].pending + '</span>' +
-      '</div>' +
-      '<h3>' + name + '</h3>';
-    /* To use a real photo, replace the .cat-img div with:
-       <img src="fotos/nombre.jpg" alt="..." style="aspect-ratio:4/3;object-fit:cover;width:100%"> */
+        '<span class="pending">' + i18n[lang].pending + '</span>';
+    }
+    card.innerHTML = '<div class="cat-img">' + imgHtml + '</div><h3>' + name + '</h3>';
     grid.appendChild(card);
   });
 }
+
+/* ---------- lightbox ---------- */
+let lbCat = 0, lbIdx = 0;
+function openLb(catIndex){
+  lbCat = catIndex; lbIdx = 0;
+  updateLb();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLb(){
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function stepLb(d){
+  const photos = manifest[catSlugs[lbCat]] || [];
+  if (!photos.length) return;
+  lbIdx = (lbIdx + d + photos.length) % photos.length;
+  updateLb();
+}
+function updateLb(){
+  const slug = catSlugs[lbCat];
+  const photos = manifest[slug] || [];
+  const name = i18n[lang].cats[lbCat];
+  document.getElementById('lbImg').src = 'fotos/' + slug + '/' + encodeURIComponent(photos[lbIdx]);
+  document.getElementById('lbImg').alt = name;
+  document.getElementById('lbTitle').textContent = name;
+  document.getElementById('lbCount').textContent = (lbIdx + 1) + ' / ' + photos.length;
+}
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'Escape') closeLb();
+  if (e.key === 'ArrowLeft') stepLb(-1);
+  if (e.key === 'ArrowRight') stepLb(1);
+});
+document.getElementById('lightbox').addEventListener('click', e => {
+  if (e.target.id === 'lightbox') closeLb();
+});
 
 function setLang(l){
   lang = l;

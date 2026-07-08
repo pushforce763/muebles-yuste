@@ -103,6 +103,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(244,241,233,.92);backdro
 .heritage .container{display:grid;grid-template-columns:auto 1fr;gap:48px;align-items:center}
 .heritage .num{font-family:var(--display);font-size:clamp(4rem,9vw,7rem);color:var(--brass-light);line-height:1}
 .heritage p{max-width:560px;color:#d9d2c4;font-size:1.08rem}
+.heritage .her-rebrand{font-family:var(--display);font-size:1.3rem;color:var(--brass-light);margin-bottom:12px}
 
 /* ---------- contact ---------- */
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px}
@@ -240,7 +241,10 @@ footer .social a:hover{color:var(--brass-light)}
 <section class="heritage">
   <div class="container section">
     <div class="num">50</div>
-    <p data-i18n="her_p"></p>
+    <div>
+      <p class="her-rebrand" data-i18n="her_rebrand"></p>
+      <p data-i18n="her_p"></p>
+    </div>
   </div>
 </section>
 
@@ -316,6 +320,7 @@ const i18n = {
     svc6_t:"Garantía mínima de 2 años", svc6_p:"Todos nuestros productos están garantizados, para su total tranquilidad.",
     col_eyebrow:"Colección", col_title:"Un mueble para cada rincón",
     col_sub:"Dormitorios, comedores, sofás, colchones y mucho más. Visite la tienda para descubrir la colección completa.",
+    her_rebrand:"Una nueva generación, la misma casa: Yuste Ruíz Mobiliario continúa el legado de Muebles Yuste.",
     her_p:"Medio siglo asesorando a las familias de Tarragona. Tres generaciones de clientes que vuelven porque saben que aquí se compra sin miedo a equivocarse.",
     con_eyebrow:"Contacto", con_title:"Venga a vernos",
     con_sub:"Estaremos encantados de atenderle en la tienda, por teléfono o por correo.",
@@ -341,6 +346,7 @@ const i18n = {
     svc6_t:"Garantia mínima de 2 anys", svc6_p:"Tots els nostres productes estan garantits, per a la seva total tranquil·litat.",
     col_eyebrow:"Col·lecció", col_title:"Un moble per a cada racó",
     col_sub:"Dormitoris, menjadors, sofàs, matalassos i molt més. Visiteu la botiga per descobrir la col·lecció completa.",
+    her_rebrand:"Una nova generació, la mateixa casa: Yuste Ruíz Mobiliario continua el llegat de Muebles Yuste.",
     her_p:"Mig segle assessorant les famílies de Tarragona. Tres generacions de clients que tornen perquè saben que aquí es compra sense por d'equivocar-se.",
     con_eyebrow:"Contacte", con_title:"Veniu a veure'ns",
     con_sub:"Estarem encantats d'atendre-us a la botiga, per telèfon o per correu.",

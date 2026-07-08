@@ -270,21 +270,6 @@ footer .social a:hover{color:var(--brass-light)}
           <div><strong data-i18n="con_hours"></strong><br><span data-i18n="con_hours_v"></span> <em style="color:var(--muted);font-size:.85rem" data-i18n="con_mock"></em></div>
         </li>
       </ul>
-      <form class="form" onsubmit="return sendForm(event)">
-        <div>
-          <label for="fName" data-i18n="f_name"></label>
-          <input id="fName" required autocomplete="name">
-        </div>
-        <div>
-          <label for="fMail">Email</label>
-          <input id="fMail" type="email" required autocomplete="email">
-        </div>
-        <div>
-          <label for="fMsg" data-i18n="f_msg"></label>
-          <textarea id="fMsg" required></textarea>
-        </div>
-        <button class="btn btn-brass" type="submit" data-i18n="f_send"></button>
-      </form>
     </div>
   </div>
 </section>
@@ -477,20 +462,6 @@ function toggleMenu(){
 document.querySelectorAll('.nav-links a').forEach(a =>
   a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'))
 );
-
-function sendForm(e){
-  e.preventDefault();
-  /* Static hosting has no backend: this opens the user's mail client prefilled.
-     For a real form, create a free Formspree form and set:
-     <form action="https://formspree.io/f/YOUR_ID" method="POST"> */
-  const n = document.getElementById('fName').value;
-  const m = document.getElementById('fMail').value;
-  const msg = document.getElementById('fMsg').value;
-  location.href = 'mailto:info@mueblesyuste.com?subject=' +
-    encodeURIComponent('Consulta web — ' + n) +
-    '&body=' + encodeURIComponent(msg + '\n\n' + n + ' <' + m + '>');
-  return false;
-}
 
 document.getElementById('year').textContent = new Date().getFullYear();
 setLang('es');

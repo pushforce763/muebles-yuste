@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Yuste Ruíz Mobiliario — Muebles en Tarragona desde 1976</title>
+<link rel="icon" href="img/logo.png">
 <meta name="description" content="Yuste Ruíz Mobiliario: venta e instalación de muebles, colchones y sofás en Tarragona desde 1976. Asesoramiento y diseño gratuitos, transporte e instalación.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,8 +41,9 @@ h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.15}
 /* ---------- header ---------- */
 header{position:sticky;top:0;z-index:50;background:rgba(244,241,233,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 .nav{display:flex;align-items:center;justify-content:space-between;height:68px}
-.logo{font-family:var(--display);font-size:1.25rem;font-weight:700;text-decoration:none;letter-spacing:.01em}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-size:1.25rem;font-weight:700;text-decoration:none;letter-spacing:.01em}
 .logo span{color:var(--brass)}
+.logo-mark{height:38px;width:auto}
 .nav-links{display:flex;gap:28px;list-style:none;align-items:center}
 .nav-links a{text-decoration:none;font-size:.92rem;font-weight:500;color:var(--ink)}
 .nav-links a:hover{color:var(--brass)}
@@ -144,7 +146,7 @@ footer .social a:hover{color:var(--brass-light)}
 
 <header>
   <div class="container nav">
-    <a class="logo" href="#inicio"><span>Yuste Ruíz</span> Mobiliario</a>
+    <a class="logo" href="#inicio"><img class="logo-mark" src="img/logo.png" alt="Yuste Ruíz Mobiliario"><span>Yuste Ruíz</span> Mobiliario</a>
     <nav>
       <ul class="nav-links" id="navLinks">
         <li><a href="#inicio" data-i18n="nav_home"></a></li>

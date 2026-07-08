@@ -1,4 +1,4 @@
-# Web Muebles Yuste
+# Web Yuste Ruíz Mobiliario
 
 Sitio estático (HTML/CSS/JS en un solo `index.html`) para GitHub Pages.
 
